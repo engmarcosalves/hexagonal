@@ -2,14 +2,13 @@ package br.com.marcaoalves.hexagonal.adapters.in.controller;
 
 import br.com.marcaoalves.hexagonal.adapters.in.controller.mapper.CustomerMapper;
 import br.com.marcaoalves.hexagonal.adapters.in.controller.request.CustomerRequest;
+import br.com.marcaoalves.hexagonal.adapters.in.controller.response.CustomerResponse;
+import br.com.marcaoalves.hexagonal.application.ports.in.FindCustomerByIdInputPort;
 import br.com.marcaoalves.hexagonal.application.ports.in.InsertCustomerInputPort;
 import feign.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,6 +20,9 @@ public class CustomerController {
     private InsertCustomerInputPort insertCustomerInputPort;
 
     @Autowired
+    private FindCustomerByIdInputPort findCustomerByIdInputPort;
+
+    @Autowired
     private CustomerMapper customerMapper;
 
     @PostMapping
@@ -29,4 +31,12 @@ public class CustomerController {
         insertCustomerInputPort.insert(customer, customerRequest.getZipCode());
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerResponse> findById(@PathVariable("id") final String id) {
+        var customer = findCustomerByIdInputPort.find(id);
+        var customerResponse = customerMapper.toCustomerRespose(customer);
+        return ResponseEntity.ok().body(customerResponse);
+    }
+
 }

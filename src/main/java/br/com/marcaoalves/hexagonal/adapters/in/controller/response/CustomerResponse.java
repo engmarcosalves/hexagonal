@@ -1,2 +1,15 @@
-package br.com.marcaoalves.hexagonal.adapters.in.controller.response;public class CustomerResponse {
+package br.com.marcaoalves.hexagonal.adapters.in.controller.response;
+
+import lombok.Data;
+
+@Data
+public class CustomerResponse {
+
+    private String name;
+
+    private AddressResponse address;
+
+    private String cpf;
+
+    private Boolean isValidCpf;
 }
